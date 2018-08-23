@@ -53,4 +53,6 @@ MonoBehaviour:
   - RPCEditNoteColor
   - RPCEditNoteContent
   - RPCMoveTargetNote
+  - RPCNoteFocus
+  - RPCNoteOutFocus
   DisableAutoOpenWizard: 1

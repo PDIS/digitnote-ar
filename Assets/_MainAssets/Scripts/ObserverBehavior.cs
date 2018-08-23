@@ -10,6 +10,11 @@ public class ObserverBehavior : MonoBehaviour {
 	void Start () {
 		_pView = gameObject.GetComponent<PhotonView>();
 
+        // only display for master, currently for demo purpose
+		if (!PhotonNetwork.isMasterClient)
+			gameObject.GetComponent<MeshRenderer>().enabled = false;
+
+        // if it's the current player
 		if( _pView.isMine )
 		{
 			FollowTarget followScript = gameObject.AddComponent<FollowTarget>();

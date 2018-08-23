@@ -48,6 +48,7 @@ public class MasterBehavior : MonoBehaviour {
 		postDir.Add(nowNoteId, noteObj);
 
 		PostItemBehavior postScript = noteObj.GetComponent<PostItemBehavior>();
+        postScript.SetOutline(PredefinedColors.NewNoteColor);
 		postScript.SetColor(Vector3ToColor(colorVector));
 		postScript.SetContentText(content);
 		postScript.noteId = nowNoteId;
@@ -57,7 +58,7 @@ public class MasterBehavior : MonoBehaviour {
 
 	public void MoveTargetNote (int noteId, Vector3 toPosition)
 	{
-		_pView.RPC("RPCMoveTargetNote", PhotonTargets.All, noteId, toPosition);
+		_pView.RPC("RPCMoveTargetNote", PhotonTargets.Others, noteId, toPosition);
 	}
 
 	[PunRPC]
@@ -88,6 +89,31 @@ public class MasterBehavior : MonoBehaviour {
 	{
 		
 	}
+
+    public void SetNoteFocusViaServer (int noteId)
+	{
+		_pView.RPC("RPCNoteFocus", PhotonTargets.Others, noteId);
+	}
+
+	[PunRPC]
+    void RPCNoteFocus (int noteId)
+	{
+		GameObject targetNote = postDir[noteId];
+		targetNote.GetComponent<PostItemBehavior>().SetOutline(PredefinedColors.NoteFocusColor);
+	}
+
+    public void SetNoteOutFocusViaServer (int noteId)
+	{
+		_pView.RPC("RPCNoteOutFocus", PhotonTargets.Others, noteId);
+	}
+
+	[PunRPC]
+    void RPCNoteOutFocus(int noteId)
+	{
+		GameObject targetNote = postDir[noteId];
+		targetNote.GetComponent<PostItemBehavior>().SetLineOff();
+	}
+
 
 	Vector3 ColorToVector3 (Color color)
 	{

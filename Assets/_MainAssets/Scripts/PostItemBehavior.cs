@@ -43,8 +43,8 @@ public class PostItemBehavior : MonoBehaviour {
 	{
 		if( PhotonNetwork.isMasterClient )
 		{
-			SetOutline(Color.red);
-			Debug.Log("OVER!!");
+			MasterBehavior.Instance.SetNoteFocusViaServer(this.noteId);
+			SetOutline(PredefinedColors.NoteFocusColor);
 		}
 	}
 
@@ -52,20 +52,21 @@ public class PostItemBehavior : MonoBehaviour {
 	{
 		if(PhotonNetwork.isMasterClient)
 		{
+			MasterBehavior.Instance.SetNoteOutFocusViaServer(this.noteId);
 			SetLineOff();
-			Debug.Log("EXIT");
 		}
 	}
 
 	public void OnMouseDown()
 	{
 		isDraging = true;
+		isMovingByServer = false; // interrupt moving animation
+
 		Vector3 mousePos = RoomManager.Instance.GetMousePointPosition();
 		mousePos.y = 0.0f;
 
 		posDelta = mousePos - transform.position;
-
-		Debug.Log("CLICKED!! " + mousePos.ToString());
+        
 	}
 
 	public void OnMouseUp()
@@ -85,8 +86,8 @@ public class PostItemBehavior : MonoBehaviour {
 
 			transform.position = toPos;
 		}
-
-		if( isMovingByServer )
+		// use else if to prevent server overrides
+		else if( isMovingByServer )
 		{
 			transform.position = Vector3.Lerp(transform.position, serverToPosition, 0.2f);
 			timeToMove -= Time.deltaTime;
